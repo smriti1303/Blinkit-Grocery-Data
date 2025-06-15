@@ -80,7 +80,7 @@ To conduct a comprehensive analysis of Blinkit's sales performance, customer sat
 **📦 Item Analysis**
 + Fruits & Vegetables (1,232) and Snack Foods (1,200) are the top item types, reflecting frequent daily use and high consumer demand.
 
-+ Regular fat content items (6K) outnumber Low fat items (3K), indicating customer preference for regular variants.
++ Low fat content items (6K) outnumber Regular fat items (3K), indicating customer preference for Low Fat variants.
 
 + Tier 3 outlets offer the widest fat content range (2.2K items), suggesting strong inventory diversification in these markets.
 
