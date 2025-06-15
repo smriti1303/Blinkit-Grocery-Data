@@ -90,5 +90,5 @@ To conduct a comprehensive analysis of Blinkit's sales performance, customer sat
 **🧱 Outlet Size Contribution**
 + Medium-sized outlets contributed the most to sales ($507.90K), followed by High ($444.79K) and Small ($248.99K), highlighting the efficiency of mid-sized formats.
 
-##✅ Conclusion
+## ✅ Conclusion
 This dashboard highlights Blinkit’s strong performance in Tier 3 cities and medium-sized outlets, with Supermarket Type 1 leading in sales and inventory. Consumer preference leans toward regular fat products and essential categories like fruits and snacks. The stable sales trend and 2018 peak offer key strategic insights. Overall, the dashboard enables data-driven decisions for retail growth and product optimization.
