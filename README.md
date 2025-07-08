@@ -90,5 +90,148 @@ To conduct a comprehensive analysis of Blinkit's sales performance, customer sat
 **🧱 Outlet Size Contribution**
 + Medium-sized outlets contributed the most to sales ($507.90K), followed by High ($444.79K) and Small ($248.99K), highlighting the efficiency of mid-sized formats.
 
+### SQL QUERIES
+
+ ## ** -- 📌 Create and use database**
+CREATE DATABASE BlinkitDb;
+USE BlinkitDb;
+
+## **-- 📌 Inspect data**
+SELECT * FROM blinkit_data;
+SELECT COUNT(*) FROM blinkit_data;
+SHOW COLUMNS FROM blinkit_data;
+
+-- 📌 Fix column encoding issue
+ALTER TABLE blinkit_data
+CHANGE COLUMN `ï»¿Item Fat Content` `Item Fat Content` TEXT;
+
+-- 📌 Disable safe updates
+SET SQL_SAFE_UPDATES = 0;
+
+-- 📌 Standardize Item Fat Content values
+UPDATE blinkit_data
+SET `Item Fat Content` = 
+  CASE 
+    WHEN `Item Fat Content` IN ('LF','Low Fat') THEN 'Low Fat'
+    WHEN `Item Fat Content` IN ('reg','Regular') THEN 'Regular'
+    ELSE `Item Fat Content`
+  END;
+
+-- 📌 Check distinct Item Fat Content values
+SELECT DISTINCT `Item Fat Content` FROM blinkit_data;
+
+-- 📌 Overall Sales Metrics
+SELECT CAST(SUM(Sales)/1000000 AS DECIMAL(10,2)) AS Total_Sales_Millions FROM blinkit_data;
+SELECT CAST(AVG(Sales) AS DECIMAL(10,2)) AS Avg_Sales FROM blinkit_data;
+SELECT COUNT(*) AS No_of_Items FROM blinkit_data;
+SELECT CAST(AVG(`Rating`) AS DECIMAL(10,2)) AS Average_Rating FROM blinkit_data;
+
+-- 📌 Sales for Low Fat category
+SELECT CAST(SUM(Sales)/1000000 AS DECIMAL(10,2)) AS Total_Sales_Millions
+FROM blinkit_data
+WHERE `Item Fat Content`='Low Fat';
+
+-- 📌 Sales for outlets established in 2022
+SELECT CAST(SUM(Sales)/1000000 AS DECIMAL(10,2)) AS Total_Sales_Millions
+FROM blinkit_data
+WHERE `Outlet Establishment Year`=2022;
+
+SELECT COUNT(*) AS No_of_Items
+FROM blinkit_data
+WHERE `Outlet Establishment Year`=2022;
+
+-- 📌 Fat Content-wise Sales Summary
+SELECT `Item Fat Content`, 
+  CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
+  COUNT(*) AS No_of_items,
+  CAST(AVG(rating) AS DECIMAL(10,2)) AS Average_Ratings
+FROM blinkit_data
+GROUP BY `Item Fat Content`
+ORDER BY Total_Sales DESC;
+
+-- 📌 Fat Content Sales for 2022
+SELECT `Item Fat Content`, 
+  CAST(SUM(Sales/1000) AS DECIMAL(10,2)) AS Total_Sales_Thousand,
+  CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
+  COUNT(*) AS No_of_items,
+  CAST(AVG(rating) AS DECIMAL(10,2)) AS Average_Ratings
+FROM blinkit_data
+WHERE `Outlet Establishment Year`=2022
+GROUP BY `Item Fat Content`
+ORDER BY Total_Sales_Thousand DESC;
+
+-- 📌 Item Type Analysis (Bottom 5)
+SELECT `Item Type`, 
+  CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
+  COUNT(*) AS No_of_items,
+  CAST(AVG(rating) AS DECIMAL(10,2)) AS Average_Ratings
+FROM blinkit_data
+GROUP BY `Item Type`
+ORDER BY Total_Sales ASC
+LIMIT 5;
+
+-- 📌 Outlet Location and Fat Content Analysis
+SELECT `Outlet Location Type`,`Item Fat Content`, 
+  CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
+  COUNT(*) AS No_of_items,
+  CAST(AVG(rating) AS DECIMAL(10,2)) AS Average_Ratings
+FROM blinkit_data
+GROUP BY `Outlet Location Type`,`Item Fat Content`
+ORDER BY Total_Sales DESC;
+
+-- 📌 Pivot-style Location vs Fat Content Sales
+SELECT
+  `Outlet Location Type`,
+  SUM(CASE WHEN `Item Fat Content` = 'Low Fat' THEN Sales ELSE 0 END) AS `Low Fat`,
+  SUM(CASE WHEN `Item Fat Content` = 'Regular' THEN Sales ELSE 0 END) AS `Regular`
+FROM
+  blinkit_data
+GROUP BY
+  `Outlet Location Type`
+ORDER BY
+  `Outlet Location Type`;
+
+-- 📌 Year-wise Analysis
+SELECT `Outlet Establishment Year`, 
+  CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
+  COUNT(*) AS No_of_items,
+  CAST(AVG(rating) AS DECIMAL(10,2)) AS Average_Ratings
+FROM blinkit_data
+GROUP BY `Outlet Establishment Year`
+ORDER BY `Outlet Establishment Year` ASC;
+
+-- 📌 Outlet Size Analysis
+SELECT `Outlet Size`,
+  CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST((SUM(Sales)*100/SUM(SUM(Sales)) OVER ()) AS DECIMAL(10,2)) AS Sales_Percentage
+FROM blinkit_data
+GROUP BY `Outlet Size`
+ORDER BY Total_Sales DESC;
+
+-- 📌 Outlet Location Type Analysis
+SELECT `Outlet Location Type`, 
+  CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
+  COUNT(*) AS No_of_items,
+  CAST(AVG(rating) AS DECIMAL(10,2)) AS Average_Ratings
+FROM blinkit_data
+GROUP BY `Outlet Location Type`
+ORDER BY Total_Sales DESC;
+
+-- 📌 Outlet Type Analysis
+SELECT `Outlet Type`, 
+  CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
+  CAST((SUM(Sales)*100/SUM(SUM(Sales)) OVER ()) AS DECIMAL(10,2)) AS Sales_Percentage,
+  CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
+  COUNT(*) AS No_of_items,
+  CAST(AVG(rating) AS DECIMAL(10,2)) AS Average_Ratings
+FROM blinkit_data
+GROUP BY `Outlet Type`;
+
+
 ## ✅ Conclusion
 This dashboard highlights Blinkit’s strong performance in Tier 3 cities and medium-sized outlets, with Supermarket Type 1 leading in sales and inventory. Consumer preference leans toward regular fat products and essential categories like fruits and snacks. The stable sales trend and 2018 peak offer key strategic insights. Overall, the dashboard enables data-driven decisions for retail growth and product optimization.
