@@ -92,23 +92,23 @@ To conduct a comprehensive analysis of Blinkit's sales performance, customer sat
 
 ### SQL QUERIES
 
- ## ** -- 📌 Create and use database**
+ **📌 Create and use database**
 CREATE DATABASE BlinkitDb;
 USE BlinkitDb;
 
-## **-- 📌 Inspect data**
+**📌 Inspect data**
 SELECT * FROM blinkit_data;
 SELECT COUNT(*) FROM blinkit_data;
 SHOW COLUMNS FROM blinkit_data;
 
--- 📌 Fix column encoding issue
+**📌 Fix column encoding issue**
 ALTER TABLE blinkit_data
 CHANGE COLUMN `ï»¿Item Fat Content` `Item Fat Content` TEXT;
 
--- 📌 Disable safe updates
+**📌 Disable safe updates**
 SET SQL_SAFE_UPDATES = 0;
 
--- 📌 Standardize Item Fat Content values
+**📌 Standardize Item Fat Content values**
 UPDATE blinkit_data
 SET `Item Fat Content` = 
   CASE 
@@ -117,21 +117,21 @@ SET `Item Fat Content` =
     ELSE `Item Fat Content`
   END;
 
--- 📌 Check distinct Item Fat Content values
+**📌 Check distinct Item Fat Content values**
 SELECT DISTINCT `Item Fat Content` FROM blinkit_data;
 
--- 📌 Overall Sales Metrics
+**📌 Overall Sales Metrics**
 SELECT CAST(SUM(Sales)/1000000 AS DECIMAL(10,2)) AS Total_Sales_Millions FROM blinkit_data;
 SELECT CAST(AVG(Sales) AS DECIMAL(10,2)) AS Avg_Sales FROM blinkit_data;
 SELECT COUNT(*) AS No_of_Items FROM blinkit_data;
 SELECT CAST(AVG(`Rating`) AS DECIMAL(10,2)) AS Average_Rating FROM blinkit_data;
 
--- 📌 Sales for Low Fat category
+**📌 Sales for Low Fat category**
 SELECT CAST(SUM(Sales)/1000000 AS DECIMAL(10,2)) AS Total_Sales_Millions
 FROM blinkit_data
 WHERE `Item Fat Content`='Low Fat';
 
--- 📌 Sales for outlets established in 2022
+**📌 Sales for outlets established in 2022**
 SELECT CAST(SUM(Sales)/1000000 AS DECIMAL(10,2)) AS Total_Sales_Millions
 FROM blinkit_data
 WHERE `Outlet Establishment Year`=2022;
@@ -140,7 +140,7 @@ SELECT COUNT(*) AS No_of_Items
 FROM blinkit_data
 WHERE `Outlet Establishment Year`=2022;
 
--- 📌 Fat Content-wise Sales Summary
+**📌 Fat Content-wise Sales Summary**
 SELECT `Item Fat Content`, 
   CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
   CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
@@ -150,7 +150,7 @@ FROM blinkit_data
 GROUP BY `Item Fat Content`
 ORDER BY Total_Sales DESC;
 
--- 📌 Fat Content Sales for 2022
+**📌 Fat Content Sales for 2022**
 SELECT `Item Fat Content`, 
   CAST(SUM(Sales/1000) AS DECIMAL(10,2)) AS Total_Sales_Thousand,
   CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
@@ -161,7 +161,7 @@ WHERE `Outlet Establishment Year`=2022
 GROUP BY `Item Fat Content`
 ORDER BY Total_Sales_Thousand DESC;
 
--- 📌 Item Type Analysis (Bottom 5)
+**📌 Item Type Analysis (Bottom 5)**
 SELECT `Item Type`, 
   CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
   CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
@@ -172,7 +172,7 @@ GROUP BY `Item Type`
 ORDER BY Total_Sales ASC
 LIMIT 5;
 
--- 📌 Outlet Location and Fat Content Analysis
+**📌 Outlet Location and Fat Content Analysis**
 SELECT `Outlet Location Type`,`Item Fat Content`, 
   CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
   CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
@@ -182,7 +182,7 @@ FROM blinkit_data
 GROUP BY `Outlet Location Type`,`Item Fat Content`
 ORDER BY Total_Sales DESC;
 
--- 📌 Pivot-style Location vs Fat Content Sales
+**📌 Pivot-style Location vs Fat Content Sales**
 SELECT
   `Outlet Location Type`,
   SUM(CASE WHEN `Item Fat Content` = 'Low Fat' THEN Sales ELSE 0 END) AS `Low Fat`,
@@ -194,7 +194,7 @@ GROUP BY
 ORDER BY
   `Outlet Location Type`;
 
--- 📌 Year-wise Analysis
+**📌 Year-wise Analysis**
 SELECT `Outlet Establishment Year`, 
   CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
   CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
@@ -204,7 +204,7 @@ FROM blinkit_data
 GROUP BY `Outlet Establishment Year`
 ORDER BY `Outlet Establishment Year` ASC;
 
--- 📌 Outlet Size Analysis
+**📌 Outlet Size Analysis**
 SELECT `Outlet Size`,
   CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
   CAST((SUM(Sales)*100/SUM(SUM(Sales)) OVER ()) AS DECIMAL(10,2)) AS Sales_Percentage
@@ -212,7 +212,7 @@ FROM blinkit_data
 GROUP BY `Outlet Size`
 ORDER BY Total_Sales DESC;
 
--- 📌 Outlet Location Type Analysis
+**📌 Outlet Location Type Analysis**
 SELECT `Outlet Location Type`, 
   CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
   CAST(AVG(Sales) AS DECIMAL(10,2)) AS Average_Sales,
@@ -222,7 +222,7 @@ FROM blinkit_data
 GROUP BY `Outlet Location Type`
 ORDER BY Total_Sales DESC;
 
--- 📌 Outlet Type Analysis
+**📌 Outlet Type Analysis**
 SELECT `Outlet Type`, 
   CAST(SUM(Sales) AS DECIMAL(10,2)) AS Total_Sales,
   CAST((SUM(Sales)*100/SUM(SUM(Sales)) OVER ()) AS DECIMAL(10,2)) AS Sales_Percentage,
